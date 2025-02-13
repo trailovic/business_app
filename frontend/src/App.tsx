@@ -1,34 +1,30 @@
 import { useState } from 'react';
 import axios, { AxiosError } from 'axios';
+import { 
+  BrowserRouter as Router, 
+  Routes, 
+  Route, 
+  useNavigate } 
+from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
 
-export default function App() {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-
-  const handleRegister = async () => {
-    try {
-      const response = await axios.post('http://localhost:5000/register', { email, password });
-      setMessage(response.data.message);
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        setMessage(error.response?.data?.message || 'Registration failed');
-      } else {
-        setMessage('An unexpected error occurred');
-      }
-    }
-  };
+  const navigate = useNavigate(); // Nav hook
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/login', { email, password });
+      const response = await axios.post('http://127.0.0.1:5000/login',
+        { email, password });
       setMessage(response.data.message);
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        setMessage(error.response?.data?.message || 'Login failed');
-      } else {
-        setMessage('An unexpected error occurred');
+
+      if (response.status === 200) {
+        navigate('/dashboard');
       }
+    } catch (error) {
+      setMessage('Login failed');
     }
   };
 
@@ -49,10 +45,18 @@ export default function App() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button onClick={handleRegister}>Register</button>
         <button onClick={handleLogin}>Login</button>
         {message && <p>{message}</p>}
       </div>
     </div>
   );
+}
+
+export default function App() {
+  return (
+      <Routes>
+        <Route path = '/' element={<Login />} />
+        <Route path = '/dashboard' element={<Dashboard />} />
+      </Routes>
+  )
 }
