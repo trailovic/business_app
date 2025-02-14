@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { 
-  BrowserRouter as Router, 
   Routes, 
   Route, 
   useNavigate } 
@@ -23,7 +22,7 @@ function Login() {
       if (response.status === 200) {
         navigate('/dashboard');
       }
-    } catch (error) {
+    } catch {
       setMessage('Login failed');
     }
   };
